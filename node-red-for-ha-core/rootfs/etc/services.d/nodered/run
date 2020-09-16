@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+# ==============================================================================
+# Node-RED for Home Assistant Core
+# Starts Node-RED
+# ==============================================================================
+
+echo "Starting Node-RED..."
+
+cd /usr/src/root
+exec npm start --cache /data/.npm -- --userDir /data
