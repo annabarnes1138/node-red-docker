@@ -6,7 +6,9 @@ FROM lsiobase/${OS} AS base
 ENV NODE_VERSION=10.22.1
 ENV YARN_VERSION=1.22.4
 
-RUN apk add --no-cache libstdc++ \
+RUN groupmod -n node users \
+    && adduser -u 1000 -G node -s /bin/sh -D node \
+    && apk add --no-cache libstdc++ \
     && apk add --no-cache --virtual .build-deps curl \
     && ARCH= && alpineArch="$(apk --print-arch)" \
     && case "${alpineArch##*-}" in \
