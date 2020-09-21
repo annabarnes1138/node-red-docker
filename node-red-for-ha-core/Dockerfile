@@ -1,9 +1,5 @@
-ARG ARCH=amd64
-ARG NODE_VERSION=10
-ARG OS=alpine
-
 #### Stage BASE ########################################################################################################
-FROM ${ARCH}/node:${NODE_VERSION}-${OS} AS base
+FROM stecky/lsiobase-alpine-node AS base
 
 # Copy scripts
 COPY scripts/*.sh /tmp/
@@ -20,6 +16,7 @@ RUN set -ex && \
     openssl \
     openssh-client && \
     mkdir -p /usr/src/root /data && \
+    deluser --remove-home guest && \
     deluser --remove-home node && \
     adduser -h /usr/src/root -D -H node-red -u 1000 && \
     chown -R node-red:root /data && chmod -R g+rwX /data && \ 
@@ -67,11 +64,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
 # Copy root filesystem
 COPY rootfs /
 
-# Install s6 overlay - https://github.com/just-containers/s6-overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.5/s6-overlay-amd64.tar.gz /tmp/s6-overlay.tar.gz
-RUN tar xvfz /tmp/s6-overlay.tar.gz -C /
-
-# Copy node modules from base
+# Copy node modules from build
 COPY --from=build /usr/src/root/prod_node_modules ./node_modules
 
 # Env variables
