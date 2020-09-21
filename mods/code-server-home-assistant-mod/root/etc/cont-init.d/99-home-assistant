@@ -43,7 +43,7 @@ while read -r ext; do \
                 -C "/root/.code-server/extensions/${extension}-${version}" extension; \
     [ $? -ne 0 ] && exit 1; \
     sleep 1; \
-done < /root/vscode.extensions
+done < /vscode.extensions
 
 ls -la /root/.code-server/extensions/
 
