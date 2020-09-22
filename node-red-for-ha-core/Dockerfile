@@ -1,5 +1,5 @@
 #### Stage BASE ########################################################################################################
-FROM stecky/lsiobase-alpine-node AS base
+FROM stecky/nodejs-base-alpine AS base
 
 # Copy scripts
 COPY scripts/*.sh /tmp/

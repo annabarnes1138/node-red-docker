@@ -1,12 +1,12 @@
 {
-    "name": "node-red-for-ha-core",
-    "version": "0.0.1",
+    "name": "node-red-alpine",
+    "version": "1.1.3",
     "description": "Low-code programming for event-driven applications",
     "homepage": "http://nodered.org",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/stecky/docker-templates.git"
+        "url": "https://github.com/stecky/docker-images.git"
     },
     "main": "node_modules/node-red/red/red.js",
     "scripts": {
