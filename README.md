@@ -4,19 +4,23 @@
 [![DockerHub Stars](https://img.shields.io/docker/stars/stecky/node-red-for-ha-core.svg?maxAge=2592000)](https://hub.docker.com/r/stecky/node-red-for-ha-core/)
 [![https://www.buymeacoffee.com/stecky](https://img.shields.io/badge/Donate-Buy%20me%20a%20coffee-orange?style=for-the-badge)](https://www.buymeacoffee.com/noderedhacore)
 
-Essentially a clone of the [official Node-RED image](https://github.com/node-red/node-red-docker/blob/master/docker-custom/Dockerfile.custom), but with [stecky/nodejs:alpine](https://github.com/stecky/nodejs/tree/alpine) as the base image
+Essentially a clone of the [official Node-RED image](https://github.com/node-red/node-red-docker/blob/master/docker-custom/Dockerfile.custom), but with [stecky/nodejs:alpine](https://github.com/stecky/nodejs/tree/alpine) as the base image and Home Assistant extensions baked in.
+
+Note: If you run hassio then you should just install the add-on, but if you run Home Assistant Core then this is for you.
 
 ## Quick Start
 
 To run in Docker in its simplest form just run:
 
-        docker run -it -p 1880:1880 --name mynodered stecky/node-red-for-ha-core
+        docker run -it -p 1880:1880 -e HOMEASSISTANT_URL=http://localhost:8123 -e HOMEASSISTANT_TOKEN=not_a_real_token --name mynodered stecky/node-red-for-ha-core
 
 Let's dissect that command:
 
         docker run                   - run this container, initially building locally if necessary
         -it                          - attach a terminal session so we can see what is going on
         -p 1880:1880                 - connect local port 1880 to the exposed internal port 1880
+        -e HOMEASSISTANT_URL         - This is the url you use to access your instance of HA Core
+        -e HOMEASSISTANT_TOKEN       - Create a long-lived access token in HA and put it here
         --name mynodered             - give this machine a friendly local name
         stecky/node-red-for-ha-core  - the image to base it on - currently Node-RED v1.1.3
 
