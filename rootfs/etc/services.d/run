@@ -6,5 +6,5 @@
 
 echo "Starting Node-RED..."
 
-cd /usr/src/root
+cd /usr/src/node-red
 exec npm start --cache /data/.npm -- --userDir /data
