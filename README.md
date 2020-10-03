@@ -23,7 +23,6 @@ Let's dissect that command:
         --name mynodered             - give this machine a friendly local name
         stecky/node-red              - the image to base it on - currently Node-RED v1.1.3
 
-
 Running that command should give a terminal window with a running instance of Node-RED.
 
         Welcome to Node-RED
@@ -61,7 +60,6 @@ Running that command should give a terminal window with a running instance of No
 
 You can then browse to `http://{host-ip}:1880` to get the familiar Node-RED desktop.
 
-
 The advantage of doing this is that by giving it a name (mynodered) we can manipulate it
 more easily, and by fixing the host port we know we are on familiar ground.
 Of course this does mean we can only run one instance at a time... but one step at a time folks...
@@ -71,15 +69,15 @@ container will keep running in the background.
 
 To reattach to the terminal (to see logging) run:
 
-        $ docker attach mynodered
+        docker attach mynodered
 
 If you need to restart the container (e.g. after a reboot or restart of the Docker daemon):
 
-        $ docker start mynodered
+        docker start mynodered
 
 and stop it again when required:
 
-        $ docker stop mynodered
+        docker stop mynodered
 
 **Healthcheck**: to turn off the Healthcheck add `--no-healthcheck` to the run command.
 

@@ -32,3 +32,6 @@ jobs:
         # Push all of the tags
         - docker push ${DOCKERHUB}:${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
         - docker push ${DOCKERHUB}:latest
+
+after_success:
+  - git tag -a v${majorMinorPatch}.${TRAVIS_BUILD_NUMBER} -m "Added by Travis CI"
