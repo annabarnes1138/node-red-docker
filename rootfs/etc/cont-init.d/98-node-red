@@ -7,3 +7,6 @@
 # Patch Node-RED Dashboard
 cd /usr/src/node-red/node_modules/node-red-dashboard
 patch -p1 < /etc/node-red/patches/node-red-dashboard-show-dashboard.patch
+
+# Inject Node-RED port
+sed -i "s/%%PORT%%/${TCP_PORT_1880:-1880}/" "/usr/src/node-red/node_modules/node-red-dashboard/nodes/ui_base.html"
