@@ -34,5 +34,9 @@ jobs:
         - docker push ${DOCKERHUB}:latest
 
 after_success:
-  - git tag -a v${majorMinorPatch}.${TRAVIS_BUILD_NUMBER} -m "Added by Travis CI"
-  - git push origin --tags
+  # CREATE GIT TAG
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export GIT_TAG=v${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+  - git push https://${GITHUBKEY}@github.com/stecky/alpine-node-red-docker ${GIT_TAG}
