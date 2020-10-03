@@ -16,12 +16,12 @@ RUN set -ex && \
         git \
         openssl \
         openssh-client && \
-    mkdir -p /usr/src/node-red /data && \
+    mkdir -p /usr/src/node-red /config && \
     # deluser guest && \
     adduser -h /usr/src/node-red -D -H node-red && \
-    chown -R node-red:root /data && chmod -R g+rwX /data && \ 
+    chown -R node-red:root /config && chmod -R g+rwX /config && \ 
     chown -R node-red:root /usr/src/node-red && chmod -R g+rwX /usr/src/node-red
-    # chown -R node-red:node-red /data && \
+    # chown -R node-red:node-red /config && \
     # chown -R node-red:node-red /usr/src/node-red
 
 # Set work directory
@@ -29,7 +29,7 @@ WORKDIR /usr/src/node-red
 
 # package.json contains Node-RED NPM module and node dependencies
 COPY package.json .
-COPY flows.json /data
+COPY flows.json /config
 
 #### Stage BUILD #######################################################################################################
 FROM base AS build
@@ -77,7 +77,7 @@ USER node-red
 
 # Env variables
 ENV NODE_RED_VERSION=$NODE_RED_VERSION \
-    NODE_PATH=/usr/src/node-red/node_modules:/data/node_modules \
+    NODE_PATH=/usr/src/node-red/node_modules:/config/node_modules \
     FLOWS=flows.json \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_CMD_WAIT_FOR_SERVICES=1
@@ -86,7 +86,7 @@ ENV NODE_RED_VERSION=$NODE_RED_VERSION \
 # ENV NODE_RED_ENABLE_PROJECTS=true     # Uncomment to enable projects option
 
 # User configuration directory volume
-VOLUME ["/data"]
+VOLUME ["/config"]
 
 # Expose the listening port of node-red
 EXPOSE 1880

@@ -12,14 +12,14 @@ This lets us make [docker-mods](https://github.com/linuxserver/docker-mods) like
 
 To run in Docker in its simplest form just run:
 
-        docker run -it -p 1880:1880 -v node_red_data:/data --name mynodered stecky/node-red
+        docker run -it -p 1880:1880 -v node_red_data:/config --name mynodered stecky/node-red
 
 Let's dissect that command:
 
         docker run                   - run this container, initially building locally if necessary
         -it                          - attach a terminal session so we can see what is going on
         -p 1880:1880                 - connect local port 1880 to the exposed internal port 1880
-        -v node_red_data:/data       - mount the host node_red_data directory to the container /data directory so any changes made to flows are persisted
+        -v node_red_data:/config       - mount the host node_red_data directory to the container /config directory so any changes made to flows are persisted
         --name mynodered             - give this machine a friendly local name
         stecky/node-red              - the image to base it on - currently Node-RED v1.1.3
 
@@ -32,11 +32,11 @@ Running that command should give a terminal window with a running instance of No
         10 Jul 12:57:10 - [info] Node.js  version: v10.21.0
         10 Jul 12:57:10 - [info] Linux 4.9.184-linuxkit x64 LE
         10 Jul 12:57:11 - [info] Loading palette nodes
-        10 Jul 12:57:16 - [info] Settings file  : /data/settings.js
+        10 Jul 12:57:16 - [info] Settings file  : /config/settings.js
         10 Jul 12:57:16 - [info] Context store  : 'default' [module=memory]
-        10 Jul 12:57:16 - [info] User directory : /data
+        10 Jul 12:57:16 - [info] User directory : /config
         10 Jul 12:57:16 - [warn] Projects disabled : editorTheme.projects.enabled=false
-        10 Jul 12:57:16 - [info] Flows file     : /data/flows.json
+        10 Jul 12:57:16 - [info] Flows file     : /config/flows.json
         10 Jul 12:57:16 - [info] Creating new flow file
         10 Jul 12:57:17 - [warn]
 
