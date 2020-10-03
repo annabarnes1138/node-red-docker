@@ -15,7 +15,8 @@ RUN set -ex && \
         nano \
         git \
         openssl \
-        openssh-client && \
+        openssh-client \
+        jq && \
     mkdir -p /usr/src/node-red /config && \
     # deluser guest && \
     adduser -h /usr/src/node-red -D -H node-red && \
