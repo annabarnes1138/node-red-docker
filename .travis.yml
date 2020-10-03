@@ -13,7 +13,7 @@ install:
   - docker pull gittools/gitversion:5.0.2-linux
 
 before_script:
-  - export GitVersion_FullSemVer=$(docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.0.2-linux /repo -output json -showvariable FullSemVer)
+  - export majorMinorPatch=$(docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.0.2-linux /repo -output json -showvariable MajorMinorPatch)
 
 env:
   global:
@@ -26,9 +26,9 @@ jobs:
       script:
         # Build image
         - docker build --no-cache -t ${DOCKERHUB}:latest .
-        - docker tag ${DOCKERHUB}:latest ${DOCKERHUB}:${GitVersion_FullSemVer}
+        - docker tag ${DOCKERHUB}:latest ${DOCKERHUB}:${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
         # Login to DockerHub
         - echo $DOCKERPASS | docker login -u $DOCKERUSER --password-stdin
         # Push all of the tags
-        - docker push ${DOCKERHUB}:${GitVersion_FullSemVer}
+        - docker push ${DOCKERHUB}:${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
         - docker push ${DOCKERHUB}:latest
