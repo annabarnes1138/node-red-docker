@@ -35,4 +35,4 @@ jobs:
 
 after_success:
   - git tag -a v${majorMinorPatch}.${TRAVIS_BUILD_NUMBER} -m "Added by Travis CI"
-  - git push
+  - git push origin --tags
