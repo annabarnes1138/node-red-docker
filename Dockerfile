@@ -1,34 +1,35 @@
 #### Stage BASE ########################################################################################################
-FROM stecky/nodejs:alpine AS base
+FROM lsiobase/alpine:3.11 AS base
 
 # Copy scripts
 COPY scripts/*.sh /tmp/
 
-# Install tools, create Node-RED app and data dir, add user and set rights
+# Install nodejs, tools, create Node-RED app and data dir, add user and set rights
 RUN set -ex && \
+    /tmp/install_nodejs.sh && \
     apk add --no-cache \
-    bash \
-    tzdata \
-    iputils \
-    curl \
-    nano \
-    git \
-    openssl \
-    openssh-client && \
-    mkdir -p /usr/src/root /data && \
-    deluser --remove-home guest && \
-    deluser --remove-home node && \
-    adduser -h /usr/src/root -D -H node-red -u 1000 && \
+        bash \
+        tzdata \
+        iputils \
+        curl \
+        nano \
+        git \
+        openssl \
+        openssh-client && \
+    mkdir -p /usr/src/node-red /data && \
+    # deluser guest && \
+    adduser -h /usr/src/node-red -D -H node-red && \
     chown -R node-red:root /data && chmod -R g+rwX /data && \ 
-    chown -R node-red:root /usr/src/root && chmod -R g+rwX /usr/src/root
-# chown -R node-red:node-red /data && \
-# chown -R node-red:node-red /usr/src/root
+    chown -R node-red:root /usr/src/node-red && chmod -R g+rwX /usr/src/node-red
+    # chown -R node-red:node-red /data && \
+    # chown -R node-red:node-red /usr/src/node-red
 
 # Set work directory
-WORKDIR /usr/src/root
+WORKDIR /usr/src/node-red
 
 # package.json contains Node-RED NPM module and node dependencies
 COPY package.json .
+COPY flows.json /data
 
 #### Stage BUILD #######################################################################################################
 FROM base AS build
@@ -49,7 +50,7 @@ ARG ARCH
 ARG TAG_SUFFIX=default
 
 LABEL org.label-schema.build-date=${BUILD_DATE} \
-    org.label-schema.docker.dockerfile=".docker/Dockerfile.alpine" \
+    org.label-schema.docker.dockerfile=".docker/Dockerfile" \
     org.label-schema.license="Apache-2.0" \
     org.label-schema.name="Node-RED" \
     org.label-schema.version=${BUILD_VERSION} \
@@ -59,17 +60,24 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.vcs-type="Git" \
     org.label-schema.vcs-url="https://github.com/node-red/node-red-docker" \
     org.label-schema.arch=${ARCH} \
-    authors="Dave Conway-Jones, Nick O'Leary, James Thomas, Raymond Mouthaan, Steven Barnes"
+    authors="Dave Conway-Jones, Nick O'Leary, James Thomas, Raymond Mouthaan"
 
 # Copy root filesystem
 COPY rootfs /
 
 # Copy node modules from build
-COPY --from=build /usr/src/root/prod_node_modules ./node_modules
+COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
+
+# Chown, install devtools, node & Clean up
+RUN chown -R node-red:root /usr/src/node-red && \
+    /tmp/install_devtools.sh && \
+    rm -r /tmp/*
+
+USER node-red
 
 # Env variables
 ENV NODE_RED_VERSION=$NODE_RED_VERSION \
-    NODE_PATH=/usr/src/root/node_modules:/data/node_modules \
+    NODE_PATH=/usr/src/node-red/node_modules:/data/node_modules \
     FLOWS=flows.json \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_CMD_WAIT_FOR_SERVICES=1
@@ -84,6 +92,6 @@ VOLUME ["/data"]
 EXPOSE 1880
 
 # Add a healthcheck (default every 30 secs)
-# HEALTHCHECK CMD curl http://localhost:1880/ || exit 1
+HEALTHCHECK CMD curl http://localhost:1880/ || exit 1
 
 ENTRYPOINT ["/init"]

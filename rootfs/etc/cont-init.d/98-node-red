@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+# ==============================================================================
+# Node-RED
+# Configures Node-RED before running
+# ==============================================================================
+
+# Patch Node-RED Dashboard
+cd /usr/src/root/node_modules/node-red-dashboard
+patch -p1 < /etc/node-red/patches/node-red-dashboard-show-dashboard.patch
