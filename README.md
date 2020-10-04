@@ -1,6 +1,6 @@
-# node-red-for-ha-core
+# node-red-docker
 
-[![Build Status](https://travis-ci.org/stecky/alpine-node-red-docker.svg?branch=master)](https://travis-ci.org/stecky/alpine-node-red-docker)
+[![Build Status](https://travis-ci.org/stecky/node-red-docker.svg?branch=master)](https://travis-ci.org/stecky/node-red-docker)
 [![DockerHub Pull](https://img.shields.io/docker/pulls/stecky/node-red.svg)](https://hub.docker.com/r/stecky/node-red/)
 [![DockerHub Stars](https://img.shields.io/docker/stars/stecky/node-red.svg?maxAge=2592000)](https://hub.docker.com/r/stecky/node-red/)
 [![https://www.buymeacoffee.com/stecky](https://img.shields.io/badge/Donate-Buy%20me%20a%20coffee-orange?style=for-the-badge)](https://www.buymeacoffee.com/noderedhacore)
