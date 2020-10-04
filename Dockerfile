@@ -19,7 +19,8 @@ RUN apk add --no-cache \
         musl \
         openssl \
         pwgen \
-        socat && \
+        socat \
+        jq && \
     apk add --no-cache --virtual .build-dependencies \
         build-base \
         curl-dev \
