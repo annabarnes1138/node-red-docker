@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+# ==============================================================================
+# Mosquitto MQTT Broker
+# Starts Mosquitto
+# ==============================================================================
+
+echo "Starting Mosquitto..."
+
+cd /usr/sbin
+exec mosquitto -c /mosquitto/config/mosquitto.conf

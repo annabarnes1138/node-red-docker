@@ -1,0 +1,42 @@
+os: linux
+
+language: shell
+
+branches:
+  only:
+    - master
+
+services:
+  - docker
+
+install:
+  - docker pull gittools/gitversion:5.0.2-linux
+
+before_script:
+  - export majorMinorPatch=$(docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.0.2-linux /repo -output json -showvariable MajorMinorPatch)
+
+env:
+  global:
+    - DOCKERHUB="stecky/mosquitto"
+
+jobs:
+  include:
+    - stage: BuildImage
+      if: (NOT (type IN (pull_request)))
+      script:
+        # Build image
+        - docker build --no-cache -t ${DOCKERHUB}:latest .
+        - docker tag ${DOCKERHUB}:latest ${DOCKERHUB}:${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
+        # Login to DockerHub
+        - echo $DOCKERPASS | docker login -u $DOCKERUSER --password-stdin
+        # Push all of the tags
+        - docker push ${DOCKERHUB}:${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
+        - docker push ${DOCKERHUB}:latest
+
+after_success:
+  # CREATE GIT TAG
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export GIT_TAG=v${majorMinorPatch}.${TRAVIS_BUILD_NUMBER}
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+  - git push https://${GITHUBKEY}@github.com/stecky/node-red-docker ${GIT_TAG}
