@@ -11,7 +11,7 @@ ENV VERSION=1.6.9 \
 WORKDIR /usr/src
 
 # Copy root filesystem
-COPY rootfs /
+COPY rootfs/ /
 
 RUN apk add --no-cache \
         curl \
