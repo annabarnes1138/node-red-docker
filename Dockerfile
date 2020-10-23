@@ -17,20 +17,13 @@ RUN set -ex && \
         openssl \
         openssh-client \
         jq && \
-    mkdir -p /usr/src/node-red /config && \
-    # deluser guest && \
-    adduser -h /usr/src/node-red -D -H node-red && \
-    chown -R node-red:root /config && chmod -R g+rwX /config && \ 
-    chown -R node-red:root /usr/src/node-red && chmod -R g+rwX /usr/src/node-red
-    # chown -R node-red:node-red /config && \
-    # chown -R node-red:node-red /usr/src/node-red
+    mkdir -p /usr/src/node-red /config
 
 # Set work directory
 WORKDIR /usr/src/node-red
 
 # package.json contains Node-RED NPM module and node dependencies
 COPY package.json .
-COPY flows.json /config
 
 #### Stage BUILD #######################################################################################################
 FROM base AS build
@@ -63,22 +56,22 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.arch=${ARCH} \
     authors="Dave Conway-Jones, Nick O'Leary, James Thomas, Raymond Mouthaan"
 
+WORKDIR /app
+
 # Copy root filesystem
 COPY rootfs /
+COPY flows.json /app
 
 # Copy node modules from build
-COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
+COPY --from=build /usr/src/node-red/prod_node_modules /usr/src/node-red/node_modules
 
 # Chown, install devtools, node & Clean up
-RUN chown -R node-red:root /usr/src/node-red && \
-    /tmp/install_devtools.sh && \
+RUN /tmp/install_devtools.sh && \
     rm -r /tmp/*
-
-USER node-red
 
 # Env variables
 ENV NODE_RED_VERSION=$NODE_RED_VERSION \
-    NODE_PATH=/usr/src/node-red/node_modules:/config/node_modules \
+    NODE_PATH=/usr/src/node-red/node_modules:/app/node_modules \
     FLOWS=flows.json \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_CMD_WAIT_FOR_SERVICES=1
@@ -87,7 +80,7 @@ ENV NODE_RED_VERSION=$NODE_RED_VERSION \
 # ENV NODE_RED_ENABLE_PROJECTS=true     # Uncomment to enable projects option
 
 # User configuration directory volume
-VOLUME ["/config"]
+VOLUME ["/app"]
 
 # Expose the listening port of node-red
 EXPOSE 1880

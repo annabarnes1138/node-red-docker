@@ -7,4 +7,4 @@
 echo "Starting Node-RED..."
 
 cd /usr/src/node-red
-exec npm start --cache /config/.npm -- --userDir /config
+exec npm start --cache /app/.npm -- --userDir /app
