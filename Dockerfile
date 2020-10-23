@@ -17,13 +17,7 @@ RUN set -ex && \
         openssl \
         openssh-client \
         jq && \
-    mkdir -p /usr/src/node-red /config && \
-    # deluser guest && \
-    adduser -h /usr/src/node-red -D -H node-red && \
-    chown -R node-red:root /config && chmod -R g+rwX /config && \ 
-    chown -R node-red:root /usr/src/node-red && chmod -R g+rwX /usr/src/node-red
-    # chown -R node-red:node-red /config && \
-    # chown -R node-red:node-red /usr/src/node-red
+    mkdir -p /usr/src/node-red /config
 
 # Set work directory
 WORKDIR /usr/src/node-red
@@ -70,11 +64,8 @@ COPY rootfs /
 COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
 
 # Chown, install devtools, node & Clean up
-RUN chown -R node-red:root /usr/src/node-red && \
-    /tmp/install_devtools.sh && \
+RUN /tmp/install_devtools.sh && \
     rm -r /tmp/*
-
-USER node-red
 
 # Env variables
 ENV NODE_RED_VERSION=$NODE_RED_VERSION \
